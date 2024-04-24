@@ -2,16 +2,11 @@ package libs
 
 import (
 	utils "jnoronha_golangutils"
-	"os"
 	"strings"
 )
 
 func getExtensionVsixPath() string {
-	wd, err := os.Getwd()
-	if err != nil {
-		return ""
-	}
-	return utils.ResolvePath(wd + "/download")
+	return utils.ResolvePath(utils.GetCurrentDir() + "/download")
 }
 
 func getExtensionVsixFile(extensionId string) string {
@@ -40,6 +35,10 @@ func download(extensionId string) bool {
 	utils.InfoLog("Download extension: "+extensionId, false)
 	filePath := getExtensionVsixFile(extensionId)
 	if len(filePath) > 0 {
+		if !utils.HasInternet() {
+			utils.ErrorLog("Not detect internet.", false)
+			utils.WaitForAnyKeyPressed("Please, connect to internet(PRESS ANY KEY TO CONTINUE)")
+		}
 		response := utils.Download(getUrl(extensionId), filePath)
 		if !response.Data {
 			utils.ErrorLog(response.Error.Error(), false)
@@ -47,5 +46,4 @@ func download(extensionId string) bool {
 		return response.Data
 	}
 	return false
-
 }

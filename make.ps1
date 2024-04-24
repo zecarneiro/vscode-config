@@ -43,7 +43,6 @@ function _create_dir {
 
 function _start {
     param([string[]] $arguments)
-    _clean
     _create_dir
     switch ($arguments[0]) {
         run {
@@ -52,18 +51,16 @@ function _start {
         build {
             _build
         }
+        clean {
+            _clean
+        }
         Default {
             Write-Output "$SCRIPT_NAME run|build ARG_JSON_CONFIG"
         }
-    }
-    userInput = (Read-Host "Clean unnecessary files?(Y/n)")
-    if ($userOption -ne "N" -and $userOption -ne "n") {
-        _clean
     }
 }
 Set-Location "$ROOT"
 echo "$CURRENT_DIR"
 _start $args
-echo "aaa"
 Set-Location "$CURRENT_DIR"
 

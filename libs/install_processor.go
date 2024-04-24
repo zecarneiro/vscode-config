@@ -32,10 +32,7 @@ func askTryInstallAllExtensions(extensions []string) bool {
 	for index, id := range extensions {
 		fmt.Println(strconv.Itoa(index) + " - " + id)
 	}
-	fmt.Printf("Continue (Y/n)? ")
-	var askContinue string
-	fmt.Scanln(&askContinue)
-	if askContinue == "n" || askContinue == "N" {
+	if !utils.Confirm("Continue", false) {
 		return false
 	}
 	return true
@@ -88,20 +85,10 @@ func installExtensionNoRetries(profileName string, id string, cwd string) {
 }
 
 func installExtension(profileName string, id string, cwdVsix string) {
-	counter := 0
-	for {
-		if len(cwdVsix) > 0 {
-			installExtensionNoRetries(profileName, id+".vsix", cwdVsix)
-		} else {
-			installExtensionNoRetries(profileName, id, "")
-		}
-		counter++
-		if isExtensionInstalled(id, getInstalledExtensions(profileName)) || counter > MAX_INSTALL_EXTENSIONS {
-			break
-		}
-		time.Sleep(3 * time.Second)
-		concatenated := fmt.Sprintf("#%d Try to install extension: %s", counter, id)
-		utils.WarnLog(concatenated, false)
+	if len(cwdVsix) > 0 {
+		installExtensionNoRetries(profileName, id+".vsix", cwdVsix)
+	} else {
+		installExtensionNoRetries(profileName, id, "")
 	}
 }
 
@@ -141,7 +128,20 @@ func processProfile(profile entities.Profile) {
 	}
 	if !utils.InArray[string](profileAlreadyCreated, profileName) {
 		if !profileExistOnVscode(profileName) {
-			openVscodeWithNewProfile(profileName)
+			if profileName != configurations.SettingsName {
+				copyFrom := profile.CopyFrom
+				if len(copyFrom) == 0 {
+					copyFrom = configurations.SettingsName
+				}
+				imageDir := utils.ResolvePath(utils.GetCurrentDir() + "/images/vscode-create-new-profile.png")
+				utils.Separatorlog(45)
+				utils.LogLog("Create Prefile on VS Code: "+profileName, false)
+				utils.LogLog("1 - Run command 'Profile: Create Profile' - CTRL+SHIFT+P", false)
+				utils.LogLog("2 - Insert '"+profileName+"' on PROFILE_NAME_FIELD", false)
+				utils.LogLog("3 - Insert '"+copyFrom+"' on 'Copy From' field", false)
+				utils.LogLog("3 - Folow the image: "+imageDir, false)
+			}
+			openVscodeWithNewProfile(configurations.SettingsName)
 		}
 	}
 	counter := 1
@@ -163,9 +163,6 @@ func processProfile(profile entities.Profile) {
 					fmt.Println("INSTALL FOR PROFILE: " + profileName)
 					fmt.Println("DESCRIPTION: " + data.Descriptions)
 					installExtension(profileName, id, getExtensionVsixPath())
-					if !isExtensionInstalled(id, getInstalledExtensions(profileName)) {
-						installExtension(profileName, id, "")
-					}
 					fmt.Println("#####")
 				}
 			}

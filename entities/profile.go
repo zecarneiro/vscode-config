@@ -5,4 +5,5 @@ type Profile struct {
 	Extensions     []ProfileData
 	DependsProfile []string `json:"dependsProfile,omitempty"`
 	IsSettingName  bool `json:"settingName"`
+	CopyFrom string `json:"copyFrom"`
 }
