@@ -2,7 +2,7 @@ package libs
 
 import (
 	"fmt"
-	utils "jnoronha_golangutils"
+	utils "jnoronhautils"
 	"main/entities"
 	"strconv"
 	"strings"

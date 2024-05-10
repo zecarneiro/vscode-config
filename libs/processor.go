@@ -2,8 +2,8 @@ package libs
 
 import (
 	"fmt"
-	utils "jnoronha_golangutils"
-	utilsEntities "jnoronha_golangutils/entities"
+	utils "jnoronhautils"
+	utilsEntities "jnoronhautils/entities"
 	"log"
 	"main/entities"
 	"strings"

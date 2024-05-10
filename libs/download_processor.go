@@ -1,7 +1,7 @@
 package libs
 
 import (
-	utils "jnoronha_golangutils"
+	utils "jnoronhautils"
 	"strings"
 )
 
