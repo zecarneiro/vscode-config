@@ -12,4 +12,5 @@ func main() {
 		jnoronhautils.ProcessError(errors.New("Invalid JSON with extensions and settings"))
 	}
 	libs.Start(os.Args[1])
+	jnoronhautils.OkLog("Vscode Configuration, done.", false)
 }
