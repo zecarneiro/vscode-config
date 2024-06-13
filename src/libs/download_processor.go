@@ -1,12 +1,12 @@
 package libs
 
 import (
-	utils "jnoronhautils"
+	"jnoronhautils"
 	"strings"
 )
 
 func getExtensionVsixPath() string {
-	return utils.ResolvePath(utils.GetCurrentDir() + "/download")
+	return jnoronhautils.ResolvePath(jnoronhautils.GetCurrentDir() + "/vscode-config-download")
 }
 
 func getExtensionVsixFile(extensionId string) string {
@@ -15,7 +15,7 @@ func getExtensionVsixFile(extensionId string) string {
 		return path
 	}
 	extensionDest := path + "/" + extensionId + ".vsix"
-	return utils.ResolvePath(extensionDest)
+	return jnoronhautils.ResolvePath(extensionDest)
 }
 
 func getUrl(extensionId string) string {
@@ -32,16 +32,16 @@ func getUrl(extensionId string) string {
 }
 
 func download(extensionId string) bool {
-	utils.InfoLog("Download extension: "+extensionId, false)
+	jnoronhautils.InfoLog("Download extension: "+extensionId, false)
 	filePath := getExtensionVsixFile(extensionId)
 	if len(filePath) > 0 {
-		if !utils.HasInternet() {
-			utils.ErrorLog("Not detect internet.", false)
-			utils.WaitForAnyKeyPressed("Please, connect to internet(PRESS ANY KEY TO CONTINUE)")
+		if !jnoronhautils.HasInternet() {
+			jnoronhautils.ErrorLog("Not detect internet.", false)
+			jnoronhautils.WaitForAnyKeyPressed("Please, connect to internet(PRESS ANY KEY TO CONTINUE)")
 		}
-		response := utils.Download(getUrl(extensionId), filePath)
+		response := jnoronhautils.Download(getUrl(extensionId), filePath)
 		if !response.Data {
-			utils.ErrorLog(response.Error.Error(), false)
+			jnoronhautils.ErrorLog(response.Error.Error(), false)
 		}
 		return response.Data
 	}

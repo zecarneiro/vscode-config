@@ -2,7 +2,7 @@ package libs
 
 import (
 	"fmt"
-	utils "jnoronhautils"
+	"jnoronhautils"
 	"main/entities"
 	"strconv"
 	"strings"
@@ -21,8 +21,8 @@ func isValidProfileName(name string) bool {
 	isValid := true
 	if strings.Contains(name, " ") {
 		isValid = false
-		utils.ErrorLog("Invalid profile name: "+name, false)
-		utils.InfoLog("Name must not contains: space", false)
+		jnoronhautils.ErrorLog("Invalid profile name: "+name, false)
+		jnoronhautils.InfoLog("Name must not contains: space", false)
 	}
 	return isValid
 }
@@ -32,14 +32,14 @@ func askTryInstallAllExtensions(extensions []string) bool {
 	for index, id := range extensions {
 		fmt.Println(strconv.Itoa(index) + " - " + id)
 	}
-	if !utils.Confirm("Continue", false) {
+	if !jnoronhautils.Confirm("Continue", false) {
 		return false
 	}
 	return true
 }
 
 func isExtensionInstalled(id string, extensionsInstalled []string) bool {
-	return utils.InArray[string](extensionsInstalled, strings.ToLower(id))
+	return jnoronhautils.InArray[string](extensionsInstalled, strings.ToLower(id))
 }
 
 func getInstalledExtensions(profileName string) []string {
@@ -47,17 +47,17 @@ func getInstalledExtensions(profileName string) []string {
 	command := codeCommand
 	command.Args = append(command.Args, profileName, "--list-extensions")
 	command.Verbose = false
-	response := utils.Exec(command)
+	response := jnoronhautils.Exec(command)
 	if !response.HasError() && response.HasData() {
 		for _, extension := range strings.Split(response.Data, "\n") {
 			listExtensions = append(listExtensions, strings.ToLower(strings.TrimSpace(extension)))
 		}
 	} else {
 		if response.HasData() {
-			utils.ErrorLog(response.Data, false)
+			jnoronhautils.ErrorLog(response.Data, false)
 		}
 		if response.HasError() {
-			utils.ErrorLog(response.Error.Error(), false)
+			jnoronhautils.ErrorLog(response.Error.Error(), false)
 		}
 	}
 	return listExtensions
@@ -81,7 +81,7 @@ func installExtensionNoRetries(profileName string, id string, cwd string) {
 	command.Args = append(command.Args, profileName, "--install-extension", id)
 	command.Verbose = true
 	command.Cwd = cwd
-	utils.ExecRealTime(command)
+	jnoronhautils.ExecRealTime(command)
 }
 
 func installExtension(profileName string, id string, cwdVsix string) {
@@ -99,8 +99,8 @@ func downloadAllExtensions(ids []string) {
 		for {
 			for _, id := range ids {
 				idFile := getExtensionVsixFile(id)
-				if !utils.FileExist(idFile) {
-					if !download(id) || !utils.FileExist(idFile) {
+				if !jnoronhautils.FileExist(idFile) {
+					if !download(id) || !jnoronhautils.FileExist(idFile) {
 						extensionsToDownload = append(extensionsToDownload, id)
 					}
 				}
@@ -116,7 +116,7 @@ func downloadAllExtensions(ids []string) {
 			counter++
 			time.Sleep(3 * time.Second)
 			concatenated := fmt.Sprintf("#%d Try to download all extensions again", counter)
-			utils.WarnLog(concatenated, false)
+			jnoronhautils.WarnLog(concatenated, false)
 		}
 	}
 }
@@ -126,20 +126,19 @@ func processProfile(profile entities.Profile) {
 	if profile.IsSettingName {
 		profileName = configurations.SettingsName
 	}
-	if !utils.InArray[string](profileAlreadyCreated, profileName) {
+	if !jnoronhautils.InArray[string](profileAlreadyCreated, profileName) {
 		if !profileExistOnVscode(profileName) {
 			if profileName != configurations.SettingsName {
 				copyFrom := profile.CopyFrom
 				if len(copyFrom) == 0 {
 					copyFrom = configurations.SettingsName
 				}
-				imageDir := utils.ResolvePath(utils.GetCurrentDir() + "/images/vscode-create-new-profile.png")
-				utils.Separatorlog(45)
-				utils.LogLog("Create Prefile on VS Code: "+profileName, false)
-				utils.LogLog("1 - Run command 'Profile: Create Profile' - CTRL+SHIFT+P", false)
-				utils.LogLog("2 - Insert '"+profileName+"' on PROFILE_NAME_FIELD", false)
-				utils.LogLog("3 - Insert '"+copyFrom+"' on 'Copy From' field", false)
-				utils.LogLog("3 - Folow the image: "+imageDir, false)
+				jnoronhautils.Separatorlog(45)
+				jnoronhautils.LogLog("Create Prefile on VS Code: "+profileName, false)
+				jnoronhautils.LogLog("1 - Run command 'Profile: Create Profile' - CTRL+SHIFT+P", false)
+				jnoronhautils.LogLog("2 - Insert '"+profileName+"' on PROFILE_NAME_FIELD", false)
+				jnoronhautils.LogLog("3 - Insert '"+copyFrom+"' on 'Copy From' field", false)
+				jnoronhautils.LogLog("4 - Only keep 'Extensions' on 'Choose what to configure in your Profile'", false)
 			}
 			openVscodeWithNewProfile(configurations.SettingsName)
 		}
@@ -158,7 +157,7 @@ func processProfile(profile entities.Profile) {
 		}
 		for _, data := range profile.Extensions {
 			for _, id := range data.Ids {
-				if utils.InArray[string](extensionsToInstall, id) {
+				if jnoronhautils.InArray[string](extensionsToInstall, id) {
 					fmt.Println("\n#####")
 					fmt.Println("INSTALL FOR PROFILE: " + profileName)
 					fmt.Println("DESCRIPTION: " + data.Descriptions)
@@ -175,8 +174,8 @@ func processDependsProfiles(profileName string, dependsName []string) []entities
 	var listExtensions = []entities.ProfileData{}
 	if len(dependsName) > 0 {
 		for _, profile := range profiles {
-			if profile.Name != profileName && isValidProfileName(profile.Name) && utils.InArray[string](dependsName, profile.Name) {
-				utils.DebugLog("Append all extensions from Depends Profile: "+profile.Name, false)
+			if profile.Name != profileName && isValidProfileName(profile.Name) && jnoronhautils.InArray[string](dependsName, profile.Name) {
+				jnoronhautils.DebugLog("Append all extensions from Depends Profile: "+profile.Name, false)
 				listExtensions = append(listExtensions, profile.Extensions...)
 			}
 		}
@@ -188,8 +187,8 @@ func processDependsProfiles(profileName string, dependsName []string) []entities
 func InitInstallProcessor(values []entities.Profile) {
 	profiles = values
 	for _, profile := range profiles {
-		utils.LogLog("", false)
-		utils.InfoLog("====== Process Profile: "+profile.Name+" ======", false)
+		jnoronhautils.LogLog("", false)
+		jnoronhautils.InfoLog("====== Process Profile: "+profile.Name+" ======", false)
 		profile.Extensions = append(profile.Extensions, processDependsProfiles(profile.Name, profile.DependsProfile)...)
 		if isValidProfileName(profile.Name) {
 			processProfile(profile)
