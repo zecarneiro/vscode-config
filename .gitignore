@@ -18,6 +18,5 @@
 # vendor/
 
 bin/
-download/
-vscode-config-download/
-dependencies/
+pkg/
+.vscode/

@@ -1,4 +1,6 @@
+go 1.24.11
+
 use (
 	./src
-	./vendor/golang-utils
+	./vendor/golangutils
 )
