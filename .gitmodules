@@ -1,3 +1,3 @@
-[submodule "golang-utils"]
-	path = vendor/golang-utils
-	url = https://github.com/zecarneiro/golang-utils.git
+[submodule "golangutils"]
+	path = vendor/golangutils
+	url = https://github.com/zecarneiro/golangutils.git

@@ -1,0 +1,177 @@
+{
+  "name": "Golang Dev Container",
+  "dockerFile": "Dockerfile",
+  "context": "..",
+  "remoteUser": "ubuntu",
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "settings": {
+    "[javascript]": {
+      "editor.autoClosingBrackets": "always",
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascriptreact]": {
+      "editor.autoClosingBrackets": "always",
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[shellscript]": {
+      "editor.defaultFormatter": "shakram02.bash-beautify"
+    },
+    "[typescript]": {
+      "editor.autoClosingBrackets": "always",
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+      "editor.autoClosingBrackets": "always",
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "breadcrumbs.enabled": true,
+    "console-ninja.featureSet": "Community",
+    "editor.acceptSuggestionOnCommitCharacter": false,
+    "editor.accessibilitySupport": "off",
+    "editor.bracketPairColorization.enabled": true,
+    "editor.codeActionsOnSave": [],
+    "editor.codeLens": true,
+    "editor.fontLigatures": true,
+    "editor.fontSize": 13,
+    "editor.formatOnPaste": false,
+    "editor.formatOnSave": false,
+    "editor.formatOnType": false,
+    "editor.guides.bracketPairs": "active",
+    "editor.inlineSuggest.enabled": true,
+    "editor.parameterHints.enabled": false,
+    "editor.semanticHighlighting.enabled": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.suggestSelection": "first",
+    "editor.tabSize": 4,
+    "errorLens.enabled": true,
+    "errorLens.fontStyleItalic": true,
+    "errorLens.fontWeight": "bold",
+    "explorer.compactFolders": false,
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+      "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+      "*.jsx": "${capture}.js",
+      "*.ts": "${capture}.js",
+      "*.tsx": "${capture}.ts",
+      ".env": ".env*",
+      ".env.local": ".env*",
+      "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, .eslint*, prettier*, tsconfig*, vite*, pnpm-lock*, bun.lock*, nest*",
+      "tailwind.config.js": "tailwind.config*, postcss.config*",
+      "tsconfig.json": "tsconfig.*.json"
+    },
+    "explorer.sortOrder": "foldersNestsFiles",
+    "extensions.ignoreRecommendations": true,
+    "files.associations": {
+      "*.css": "css",
+      ".env.*": "dotenv",
+      ".prettierrc": "json"
+    },
+    "files.exclude": {
+      "**/.DS_Store": true,
+      "**/.git": true,
+      "**/.hg": true,
+      "**/.svn": true,
+      "**/CVS": true,
+      ".vscode": false
+    },
+    "git.enableSmartCommit": true,
+    "git.mergeEditor": true,
+    "git.openRepositoryInParentFolders": "always",
+    "gitlens.codeLens.authors.enabled": false,
+    "gitlens.codeLens.recentChange.enabled": false,
+    "go.buildOnSave": "package",
+    "go.formatTool": "gofmt",
+    "go.gopath": null,
+    "go.goroot": null,
+    "go.inferGopath": true,
+    "go.lintOnSave": "file",
+    "go.lintTool": "golangci-lint",
+    "go.testExplorer.enable": true,
+    "go.testFlags": [
+      "-v"
+    ],
+    "go.toolsEnvVars": {
+      "GOFLAGS": "-tags=linux"
+    },
+    "go.toolsManagement.autoUpgrade": true,
+    "go.useLanguageServer": true,
+    "go.vetOnSave": "package",
+    "javascript.referencesCodeLens.enabled": true,
+    "javascript.referencesCodeLens.showOnAllFunctions": true,
+    "javascript.suggest.autoImports": true,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "security.promptForLocalFileProtocolHandling": false,
+    "security.workspace.trust.untrustedFiles": "newWindow",
+    "terminal.integrated.defaultProfile.osx": "fish",
+    "terminal.integrated.env.osx": {
+      "FIG_NEW_SESSION": "1"
+    },
+    "terminal.integrated.fontSize": 12,
+    "terminal.integrated.gpuAcceleration": "off",
+    "terminal.integrated.shell.linux": "bash",
+    "terminal.integrated.showExitAlert": false,
+    "typescript.implementationsCodeLens.enabled": true,
+    "typescript.referencesCodeLens.enabled": true,
+    "typescript.referencesCodeLens.showOnAllFunctions": true,
+    "typescript.suggest.autoImports": true,
+    "typescript.tsserver.log": "off",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "update.mode": "start",
+    "update.showReleaseNotes": false,
+    "vsicons.dontShowNewVersionMessage": true,
+    "window.commandCenter": true,
+    "window.titleBarStyle": "native",
+    "window.zoomLevel": 0,
+    "workbench.colorTheme": "Darcula",
+    "workbench.editor.labelFormat": "short",
+    "workbench.iconTheme": "vscode-icons",
+    "workbench.startupEditor": "newUntitledFile"
+  },
+  "extensions": [
+    "golang.Go",
+    "r3inbowari.gomodexplorer",
+    "alefragnani.project-manager",
+    "alefragnani.Bookmarks",
+    "gruntfuggly.todo-tree",
+    "SirTori.indenticator",
+    "IBM.output-colorizer",
+    "rokoroku.vscode-theme-darcula",
+    "vscode-icons-team.vscode-icons",
+    "jnoronha.toolsforvscode",
+    "usernamehw.errorlens",
+    "esbenp.prettier-vscode",
+    "christian-kohler.path-intellisense",
+    "mikestead.dotenv",
+    "aaron-bond.better-comments",
+    "stackbreak.comment-divider",
+    "jrebocho.vscode-random",
+    "github.copilot",
+    "ms-vscode-remote.remote-containers",
+    "redhat.vscode-yaml",
+    "42Crunch.vscode-openapi",
+    "eamodio.gitlens",
+    "timonwong.shellcheck",
+    "mads-hartmann.bash-ide-vscode",
+    "remisa.shellman",
+    "GraphQL.vscode-graphql-syntax",
+    "GraphQL.vscode-graphql",
+    "ms-vscode.PowerShell",
+    "asciidoctor.asciidoctor-vscode",
+    "jebbs.plantuml",
+    "mechatroner.rainbow-csv",
+    "DavidAnson.vscode-markdownlint",
+    "shd101wyy.markdown-preview-enhanced",
+    "ahmadalli.vscode-nginx-conf"
+  ],
+  "postCreateCommand": ""
+}
+
