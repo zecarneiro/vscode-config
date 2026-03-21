@@ -99,8 +99,8 @@
     "go.coverMode": "atomic",
     "go.coverOnSave": false,
     "go.formatTool": "default",
-    "go.inferGopath": true,
-    "go.lintOnSave": "file",
+    "go.inferGopath": false,
+    "go.lintOnSave": "package",
     "go.lintTool": "golangci-lint",
     "go.testExplorer.enable": true,
     "go.testFlags": [
