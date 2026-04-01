@@ -10,11 +10,11 @@ import (
 	"golangutils/pkg/obj"
 	"golangutils/pkg/platform"
 	"golangutils/pkg/system"
-	"main/entities"
-	"main/libs"
 	"slices"
 	"strconv"
 	"strings"
+	"vscodeconfig/core/entities"
+	"vscodeconfig/core/libs"
 )
 
 type InstallProcessor struct {
@@ -53,9 +53,9 @@ func (ip *InstallProcessor) setSettingConfigurations() {
 	settings := ip.profileProcessor.getAllInstallSettings()
 
 	if platform.IsWindows() {
-		settingsDir = file.ResolvePath(system.HomeDir(), "AppData\\Roaming\\Code\\User")
+		settingsDir = file.JoinPath(system.HomeDir(), "AppData\\Roaming\\Code\\User")
 	} else if platform.IsLinux() {
-		settingsDir = file.ResolvePath(system.HomeDir(), ".config/Code/User")
+		settingsDir = file.JoinPath(system.HomeDir(), ".config/Code/User")
 	}
 	for key := range settings {
 		arrayAllSettings = append(arrayAllSettings, key)
@@ -63,7 +63,7 @@ func (ip *InstallProcessor) setSettingConfigurations() {
 	// settings[keyAllSettings] = arrayAllSettings # Problems with duplicated settings with local settings and dev containers settings
 	if len(settingsDir) > 0 {
 		file.CreateDirectory(settingsDir, true)
-		logic.ProcessError(file.WriteJsonFile(file.ResolvePath(settingsDir, "settings.json"), settings, true))
+		logic.ProcessError(file.WriteJsonFile(file.JoinPath(settingsDir, "settings.json"), settings, true))
 	} else {
 		logger.Debug("\n\nGo to setting and open json settings")
 		logger.Debug("Append this setting bellow on json settings")

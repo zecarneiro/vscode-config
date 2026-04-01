@@ -11,9 +11,8 @@ import (
 	"golangutils/pkg/slice"
 	"slices"
 	"strings"
-
-	"main/entities"
-	"main/libs"
+	"vscodeconfig/core/entities"
+	"vscodeconfig/core/libs"
 )
 
 type ProfileProcessor struct {
@@ -63,7 +62,7 @@ func (pp *ProfileProcessor) createProfile(name string) {
 			commandStr = ""
 			logger.ErrorStr("Can not create this profile, because this SO is not supported")
 			logger.Info(fmt.Sprintf("Please open VSCode and create this profile: %s", name))
-			console.Pause("")
+			console.Pause()
 		}
 		if len(commandStr) > 0 {
 			logger.Header("Creating Profile")

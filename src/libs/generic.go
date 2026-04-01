@@ -7,8 +7,7 @@ import (
 	"golangutils/pkg/logic"
 	"golangutils/pkg/models"
 	"golangutils/pkg/obj"
-
-	"main/entities"
+	"vscodeconfig/core/entities"
 )
 
 func GetCodeCommand() models.Command {

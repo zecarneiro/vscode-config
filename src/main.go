@@ -1,8 +1,6 @@
 package main
 
-import (
-	"main/processors"
-)
+import "vscodeconfig/core/processors"
 
 func main() {
 	processors.StartProcessor()

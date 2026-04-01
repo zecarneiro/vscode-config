@@ -15,7 +15,7 @@ type DownloadProcessor struct {
 }
 
 func (dp *DownloadProcessor) getExtensionVsixPath() string {
-	dir := file.ResolvePath(system.TempDir(), "vscode-config-download")
+	dir := file.JoinPath(system.TempDir(), "vscode-config-download")
 	logic.ProcessError(file.CreateDirectory(dir, true))
 	return dir
 }

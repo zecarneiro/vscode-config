@@ -1,15 +1,16 @@
 package processors
 
 import (
-	"golangutils/pkg/exe"
+	"fmt"
 	"golangutils/pkg/file"
 	"golangutils/pkg/logger"
 	"golangutils/pkg/logic"
-	"golangutils/pkg/models"
 	"golangutils/pkg/obj"
 	"golangutils/pkg/platform"
-	"main/entities"
-	"main/libs"
+	"golangutils/pkg/system"
+	"os"
+	"vscodeconfig/core/entities"
+	"vscodeconfig/core/libs"
 
 	"github.com/spf13/cobra"
 )
@@ -58,29 +59,36 @@ func (p *Processor) resetVscode() {
 	var pathsCmd []string
 	if platform.IsLinux() {
 		pathsCmd = []string{
-			"rm -rf ~/.config/Code",
-			"rm -rf ~/.vscode",
-			"rm -rf ~/.cache/code",
+			file.JoinPath(system.HomeUserConfigDir(), "Code"),
+			file.JoinPath(system.HomeDir(), ".vscode"),
+			file.JoinPath(system.HomeDir(), ".cache/code"),
 		}
 	} else if platform.IsWindows() {
 		pathsCmd = []string{
-			"Remove-Item -Recurse -Force $env:APPDATA\\Code",
-			"Remove-Item -Recurse -Force $env:USERPROFILE\\.vscode",
-			"Remove-Item -Recurse -Force $env:LOCALAPPDATA\\Code",
+			file.JoinPath(os.Getenv("APPDATA"), "Code"),
+			file.JoinPath(system.HomeDir(), ".vscode"),
+			file.JoinPath(os.Getenv("LOCALAPPDATA"), "Code"),
 		}
 	} else if platform.IsDarwin() {
 		pathsCmd = []string{
-			"rm -rf ~/Library/Application\\ Support/Code",
-			"rm -rf ~/.vscode",
-			"rm -rf ~/Library/Caches/com.microsoft.VSCode",
-			"rm -rf ~/Library/Preferences/com.microsoft.VSCode.plist",
+			file.JoinPath(system.HomeDir(), "Library/Application Support/Code"),
+			file.JoinPath(system.HomeDir(), ".vscode"),
+			file.JoinPath(system.HomeDir(), "Library/Caches/com.microsoft.VSCode"),
+			file.JoinPath(system.HomeDir(), "Library/Preferences/com.microsoft.VSCode.plist"),
 		}
 	} else {
 		logger.ErrorStr(platform.InvalidMSG)
 		pathsCmd = []string{}
 	}
 	for _, pathCmd := range pathsCmd {
-		logic.ProcessError(exe.ExecRealTime(models.Command{Cmd: pathCmd, UseShell: true, Verbose: true}))
+		if file.IsFile(pathCmd) {
+			logger.Info(fmt.Sprintf("Deleting file: %s", pathCmd))
+			logger.Error(file.DeleteFile(pathCmd))
+		}
+		if file.IsDir(pathCmd) {
+			logger.Info(fmt.Sprintf("Deleting directory: %s", pathCmd))
+			logger.Error(file.DeleteDirectory(pathCmd))
+		}
 	}
 }
 

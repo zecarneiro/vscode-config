@@ -8,9 +8,8 @@ import (
 	"golangutils/pkg/logic"
 	"golangutils/pkg/models"
 	"reflect"
-
-	"main/entities"
-	"main/libs"
+	"vscodeconfig/core/entities"
+	"vscodeconfig/core/libs"
 )
 
 type DevContainerProcessor struct {
@@ -30,9 +29,9 @@ func newDevContainerProcessor(profileProcessor *ProfileProcessor) *DevContainerP
 func (d *DevContainerProcessor) loadData() {
 	currentDir, err := file.GetCurrentDir()
 	logic.ProcessError(err)
-	d.devContainerDir = file.ResolvePath(currentDir, ".devcontainer-generated")
-	d.jsonFile = file.ResolvePath(d.devContainerDir, "devcontainer.json")
-	d.dockerFile = file.ResolvePath(d.devContainerDir, "Dockerfile")
+	d.devContainerDir = file.JoinPath(currentDir, ".devcontainer-generated")
+	d.jsonFile = file.JoinPath(d.devContainerDir, "devcontainer.json")
+	d.dockerFile = file.JoinPath(d.devContainerDir, "Dockerfile")
 	d.validTypeChoices = map[string]bool{"go": true}
 }
 
