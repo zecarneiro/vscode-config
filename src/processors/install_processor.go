@@ -46,24 +46,18 @@ func (ip *InstallProcessor) installJsonFile(jsonFile string) {
 
 func (ip *InstallProcessor) setSettingConfigurations() {
 	var settingsDir string
-	logger.Separator()
-	logger.Header("Set settings")
-	const keyAllSettings = "workbench.settings.applyToAllProfiles"
-	arrayAllSettings := []string{}
-	settings := ip.profileProcessor.getAllInstallSettings()
-
+	settingsFileName := "settings.json"
 	if platform.IsWindows() {
 		settingsDir = file.JoinPath(system.HomeDir(), "AppData\\Roaming\\Code\\User")
 	} else if platform.IsLinux() {
 		settingsDir = file.JoinPath(system.HomeDir(), ".config/Code/User")
 	}
-	for key := range settings {
-		arrayAllSettings = append(arrayAllSettings, key)
-	}
-	// settings[keyAllSettings] = arrayAllSettings # Problems with duplicated settings with local settings and dev containers settings
+	logger.Separator()
+	logger.Header("Set settings")
+	settings := ip.profileProcessor.getAllInstallSettings("", true)
 	if len(settingsDir) > 0 {
 		file.CreateDirectory(settingsDir, true)
-		logic.ProcessError(file.WriteJsonFile(file.JoinPath(settingsDir, "settings.json"), settings, true))
+		logic.ProcessError(file.WriteJsonFile(file.JoinPath(settingsDir, settingsFileName), settings, true))
 	} else {
 		logger.Debug("\n\nGo to setting and open json settings")
 		logger.Debug("Append this setting bellow on json settings")
@@ -71,6 +65,21 @@ func (ip *InstallProcessor) setSettingConfigurations() {
 		logic.ProcessError(err)
 		fmt.Println(settingsStr)
 		libs.OpenVscodeWithNewProfile(libs.Configurations.SettingsName)
+		console.Pause()
+	}
+	logger.Separator()
+	logger.Header("Apply all settings for all Profiles")
+	vscodeStorageInfo, err := file.ReadJsonFile[entities.VSCodeStorageInfo](file.JoinPath(settingsDir, "globalStorage", "storage.json"))
+	if err != nil {
+		logger.Error(err)
+	} else {
+		for _, userDataProfile := range vscodeStorageInfo.UserDataProfiles {
+			logger.Info(fmt.Sprintf("Set settings for: PROFILE_NAME(%s) and PROFILE_ID(%s)", userDataProfile.Name, userDataProfile.Location))
+			settings = ip.profileProcessor.getAllInstallSettings(userDataProfile.Name, true)
+			profileDir := file.JoinPath(settingsDir, "profiles", userDataProfile.Location)
+			logic.ProcessError(file.WriteJsonFile(file.JoinPath(profileDir, settingsFileName), settings, true))
+			logger.Log("")
+		}
 	}
 }
 

@@ -9,6 +9,7 @@ import (
 	"golangutils/pkg/models"
 	"golangutils/pkg/platform"
 	"golangutils/pkg/slice"
+	"golangutils/pkg/str"
 	"slices"
 	"strings"
 	"vscodeconfig/core/entities"
@@ -137,10 +138,25 @@ func (pp *ProfileProcessor) getSettings(name string) map[string]interface{} {
 	return settings
 }
 
-func (pp *ProfileProcessor) getAllInstallSettings() map[string]interface{} {
+func (pp *ProfileProcessor) getAllInstallSettings(profileName string, verbose bool) map[string]interface{} {
 	settings := make(map[string]interface{})
+	profileSelectedList := slice.FilterArray(libs.Configurations.Profiles, func(profile entities.Profile) bool {
+		if str.IsEmpty(profileName) {
+			return logic.Ternary(profile.IsSettingName, true, false)
+		}
+		return logic.Ternary(profile.Name == profileName, true, false)
+	})
+	profileSelected := logic.Ternary(len(profileSelectedList) > 0, profileSelectedList[0], entities.Profile{Name: "", DependsProfile: []string{}})
 	for _, profile := range libs.Configurations.Profiles {
-		if profile.CanInstall {
+		if slices.Contains(profileSelected.DependsProfile, profile.Name) {
+			if verbose {
+				logger.Debug(fmt.Sprintf("Import settings from profile: %s", profile.Name))
+			}
+			settings = slice.ConcatMap(settings, profile.Settings)
+		} else if profile.Name == profileSelected.Name {
+			if verbose {
+				logger.Debug(fmt.Sprintf("Import self settings: %s", profile.Name))
+			}
 			settings = slice.ConcatMap(settings, profile.Settings)
 		}
 	}

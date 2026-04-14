@@ -93,6 +93,10 @@ func (p *Processor) resetVscode() {
 }
 
 func (p *Processor) parseArgs() {
+	var extractCmd *cobra.Command
+	var installCmd *cobra.Command
+	var devContainerCmd *cobra.Command
+
 	p.rootCmd = &cobra.Command{
 		Short: "Process some VSCode configurations",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -112,7 +116,7 @@ func (p *Processor) parseArgs() {
 	p.rootCmd.Flags().BoolP("reset-vscode", "r", false, "Reset VSCode")
 	p.rootCmd.Flags().StringP("profile-exists", "e", "", "Check if given profile exists")
 
-	var installCmd = &cobra.Command{
+	installCmd = &cobra.Command{
 		Use:   "install",
 		Short: "Install JSON file and start install process(Optional)",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -132,31 +136,31 @@ func (p *Processor) parseArgs() {
 	installCmd.Flags().BoolP("settings", "s", false, "Set settings from installed JSON file")
 	installCmd.Flags().BoolP("process-install", "p", false, "Process install flag for profiles, settings and extensions")
 
-	var extractCmd = &cobra.Command{
+	extractCmd = &cobra.Command{
 		Use:   "extract",
 		Short: "Extract Data from JSON File",
 		Run: func(cmd *cobra.Command, args []string) {
 			isListProfiles, _ := cmd.Flags().GetBool("list-profiles")
 			extractProfileName, _ := cmd.Flags().GetString("profile")
 			isSettings, _ := cmd.Flags().GetBool("settings")
-			switch {
-			case isSettings:
-				data, err := obj.ObjectToString(p.profileProfessor.getAllInstallSettings())
+			if isSettings {
+				data, err := obj.ObjectToString(p.profileProfessor.getAllInstallSettings(extractProfileName, false))
 				logic.ProcessError(err)
 				logger.Log(data)
-			case extractProfileName != "":
+			} else if extractProfileName != "" {
 				p.extractProfile(extractProfileName)
-			case isListProfiles:
+			} else if isListProfiles {
 				p.listProfiles()
+			} else {
+				logger.Error(extractCmd.Help())
 			}
 		},
 	}
 	extractCmd.Flags().BoolP("settings", "s", false, "Extract settings from installed JSON file")
 	extractCmd.Flags().BoolP("list-profiles", "l", false, "List all profiles names from installed JSON file")
 	extractCmd.Flags().StringP("profile", "n", "", "Extract all extensions by profile name from installed JSON file")
-	extractCmd.MarkFlagsMutuallyExclusive("settings", "profile", "list-profiles")
 
-	var devContainerCmd = &cobra.Command{
+	devContainerCmd = &cobra.Command{
 		Use:   "dev-container [name]",
 		Short: "Generate dev container file by profile name",
 		Args:  cobra.MinimumNArgs(1),

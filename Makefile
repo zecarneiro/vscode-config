@@ -8,6 +8,7 @@ BINARY := $(BINARY_DIR)/vscode-config-linux
 BINARY_WIN := $(BINARY_DIR)/vscode-config-win.exe
 SRC := $(ROOT)/src
 GO := go
+GO_RELEASE_FLAGS := -ldflags="-s -w"
 
 .PHONY: all build clean check-deps process-go-dependencies list-go-dependencies help
 
@@ -50,7 +51,13 @@ build: check-deps
 	@echo "[INFO] Build LINUX app..."
 	@GOOS=linux GOARCH=amd64 $(GO) build -o $(BINARY) $(SRC)
 
+release: check-deps
+	@mkdir -p $(BINARY_DIR)
+	@echo "[INFO] Build WINDOWS app..."
+	@GOOS=windows GOARCH=amd64 $(GO) build $(GO_RELEASE_FLAGS) -o $(BINARY_WIN) $(SRC)
+	@echo "[INFO] Build LINUX app..."
+	@GOOS=linux GOARCH=amd64 $(GO) build $(GO_RELEASE_FLAGS) -o $(BINARY) $(SRC)
+
 clean:
-	@rm -rf $(BINARY_DIR)
-	@rm -rf $(PKG_DIR)
-	
+	rm -rf $(BINARY_DIR)
+	rm -rf $(PKG_DIR)
