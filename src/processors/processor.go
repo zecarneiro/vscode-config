@@ -9,6 +9,7 @@ import (
 	"golangutils/pkg/platform"
 	"golangutils/pkg/system"
 	"os"
+
 	"vscodeconfig/core/entities"
 	"vscodeconfig/core/libs"
 
@@ -18,9 +19,8 @@ import (
 type Processor struct {
 	rootCmd *cobra.Command
 
-	installProcessor      *InstallProcessor
-	profileProfessor      *ProfileProcessor
-	devContainerProcessor *DevContainerProcessor
+	installProcessor *InstallProcessor
+	profileProfessor *ProfileProcessor
 }
 
 /* ------------------------------ PRIVATE AREA ------------------------------ */
@@ -30,7 +30,6 @@ func (p *Processor) loadData() {
 	libs.FillJsonFile(false)
 	p.profileProfessor = newProfileProcessor()
 	p.installProcessor = newInstallProcessor(p.profileProfessor)
-	p.devContainerProcessor = newDevContainerProcessor(p.profileProfessor)
 }
 
 func (p *Processor) installJsonFile(jsonFile string) {
@@ -40,7 +39,11 @@ func (p *Processor) installJsonFile(jsonFile string) {
 }
 
 func (p *Processor) extractProfile(name string) {
-	data, err := obj.ObjectToString(p.profileProfessor.getAllExtensionsFromProfile(name))
+	dataObj := map[string]any{
+		"settings":   p.profileProfessor.getAllInstallSettings(name, false),
+		"extensions": p.profileProfessor.getAllExtensionsFromProfile(name),
+	}
+	data, err := obj.ObjectToString(dataObj)
 	logic.ProcessError(err)
 	logger.Log(data)
 }
@@ -95,7 +98,6 @@ func (p *Processor) resetVscode() {
 func (p *Processor) parseArgs() {
 	var extractCmd *cobra.Command
 	var installCmd *cobra.Command
-	var devContainerCmd *cobra.Command
 
 	p.rootCmd = &cobra.Command{
 		Short: "Process some VSCode configurations",
@@ -160,20 +162,7 @@ func (p *Processor) parseArgs() {
 	extractCmd.Flags().BoolP("list-profiles", "l", false, "List all profiles names from installed JSON file")
 	extractCmd.Flags().StringP("profile", "n", "", "Extract all extensions by profile name from installed JSON file")
 
-	devContainerCmd = &cobra.Command{
-		Use:   "dev-container [name]",
-		Short: "Generate dev container file by profile name",
-		Args:  cobra.MinimumNArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
-			devContainerPostCreateCommand, _ := cmd.Flags().GetString("post-create-command")
-			containerType, _ := cmd.Flags().GetString("type")
-			devContainerName := args[0]
-			p.devContainerProcessor.generate(devContainerName, devContainerPostCreateCommand, containerType)
-		},
-	}
-	devContainerCmd.Flags().StringP("type", "t", "go", "Type of dev container (go)")
-
-	p.rootCmd.AddCommand(installCmd, extractCmd, devContainerCmd)
+	p.rootCmd.AddCommand(installCmd, extractCmd)
 }
 
 /* ------------------------------- PUBLIC AREA ------------------------------ */
